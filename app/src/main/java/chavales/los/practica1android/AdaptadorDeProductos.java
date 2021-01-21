@@ -1,5 +1,10 @@
 package chavales.los.practica1android;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProductos.ContenedorDeVistas>  {
 
     private Producto[] productos;
+    private Context context;
 
-    public AdaptadorDeProductos(Producto[] productos) {
+    public AdaptadorDeProductos(Context context, Producto[] productos) {
+        this.context = context;
         this.productos = productos;
     }
 
@@ -45,6 +52,14 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
         contenedor.getMarcaProducto().setText(producto.getMarca());
         contenedor.getCalidadProducto().setText(producto.getCalidad().getString());
         contenedor.getUltimaConsulta().setText("esto todavia no jejeje");
+
+        contenedor.itemView.setOnClickListener(
+            (v) -> {
+                Intent i = new Intent(context, InspeccionarProducto.class);
+                i.putExtra("producto", productos[posicion]);
+                context.startActivity(i);
+            }
+        );
     }
 
     @Override

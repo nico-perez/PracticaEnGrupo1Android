@@ -1,19 +1,25 @@
 package chavales.los.practica1android;
 
 public enum Calidad {
-    EXCELENTE("🔵 Excelente"), // Emoji círculo azul
-    BUENO("🟢 Bueno"), // Emoji círculo verde
-    REGULAR("🟡 Regular"), // Emoji círculo amarillo
-    MEDIOCRE("🟠 Mediocre"), // Emoji círculo naranja
-    MALO("🔴 Malo"); // Emoji círculo rojo
+    EXCELENTE("🔵", "Excelente"), // Emoji círculo azul
+    BUENO("🟢", "Bueno"), // Emoji círculo verde
+    REGULAR("🟡", "Regular"), // Emoji círculo amarillo
+    MEDIOCRE("🟠", "Mediocre"), // Emoji círculo naranja
+    MALO("🔴", "Malo"); // Emoji círculo rojo
 
+    private final String emoji;
     private final String texto;
 
-    Calidad(String texto) {
+    Calidad(String emoji, String texto) {
+        this.emoji = emoji;
         this.texto = texto;
     }
 
+    public String getEmoji() {
+        return emoji;
+    }
+
     public String getString() {
-        return texto;
+        return emoji + " " + texto;
     }
 }
