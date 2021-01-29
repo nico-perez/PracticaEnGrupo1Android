@@ -1,15 +1,20 @@
 package chavales.los.practica1android;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 public class InspeccionarProducto extends AppCompatActivity {
 
@@ -20,8 +25,14 @@ public class InspeccionarProducto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspeccionar_producto);
 
+        ((ImageButton) findViewById(R.id.botonAtras)).setOnClickListener(v -> finish());
+
         final Producto producto = getIntent().getParcelableExtra("producto");
         ((ImageView) findViewById(R.id.imagenProductoInspeccion)).setImageResource(producto.getImagen());
+        ((TextView) findViewById(R.id.textoNombreProductoInsp)).setText(producto.getNombre());
+        ((TextView) findViewById(R.id.textoMarcaProductoInsp)).setText(producto.getMarca());
+        ((TextView) findViewById(R.id.textoCalidadInsp)).setText(producto.getCalidad().getString());
+        ((TextView) findViewById(R.id.textoRatingProductoInsp)).setText(producto.getPuntuacion() + "/100");
 
         lista = findViewById(R.id.listaValoresNutricionales);
         lista.setAdapter(new BaseAdapter() {

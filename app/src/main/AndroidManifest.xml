@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PracticaEnGrupo1Android">
-        <activity android:name=".InspeccionarProducto"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".InspeccionarProducto"
+                  android:theme="@style/Theme.MaterialComponents.NoActionBar" ></activity>
+        <activity android:name=".MainActivity"
+            android:label="1ª práctica en grupo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

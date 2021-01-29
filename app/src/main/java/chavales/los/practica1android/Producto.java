@@ -20,22 +20,25 @@ public class Producto implements Parcelable {
     private String supermercado;
 
     private List<Detalle> detalles;
+    private int puntuacion;
 
-    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Calendar ultimaConsulta, List<Detalle> detalles) {
+    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Calendar ultimaConsulta, int puntuacion, List<Detalle> detalles) {
         this.nombreProducto = nombreProducto;
         this.marcaProducto = marcaProducto;
         this.imagenProducto = imagenProducto;
         this.calidadProducto = calidadProducto;
         this.ultimaConsulta = ultimaConsulta;
+        this.puntuacion = puntuacion;
         this.detalles = detalles;
     }
 
-    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Calendar ultimaConsulta, List<Detalle> detalles, String designacionProducto, String supermercado) {
+    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Calendar ultimaConsulta, int puntuacion, List<Detalle> detalles, String designacionProducto, String supermercado) {
         this.nombreProducto = nombreProducto;
         this.marcaProducto = marcaProducto;
         this.imagenProducto = imagenProducto;
         this.calidadProducto = calidadProducto;
         this.ultimaConsulta = ultimaConsulta;
+        this.puntuacion = puntuacion;
         this.detalles = detalles;
         this.designacionProducto = designacionProducto;
         this.supermercado = supermercado;
@@ -81,6 +84,10 @@ public class Producto implements Parcelable {
         this.detalles = detalles;
     }
 
+    public int getPuntuacion() {
+        return puntuacion;
+    }
+
     public static class Detalle {
 
         private final String bajoAltoEn;
@@ -123,6 +130,7 @@ public class Producto implements Parcelable {
         dest.writeInt(imagenProducto);
         dest.writeValue(calidadProducto);
         dest.writeValue(ultimaConsulta);
+        dest.writeInt(puntuacion);
         dest.writeString(designacionProducto);
         dest.writeString(supermercado);
 
@@ -150,6 +158,7 @@ public class Producto implements Parcelable {
                                      source.readInt(),
                                      (Calidad) source.readValue(null),
                                      (Calendar) source.readValue(null),
+                                     source.readInt(),
                                      null,
                                      source.readString(),
                                      source.readString());
