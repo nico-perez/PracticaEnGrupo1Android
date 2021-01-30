@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class Producto implements Parcelable {
@@ -13,7 +12,7 @@ public class Producto implements Parcelable {
     private String marcaProducto;
     private int imagenProducto;
     private Calidad calidadProducto;
-    private Calendar ultimaConsulta;
+    private Long ultimaConsulta;
 
     // esto no se sinceramente
     private String designacionProducto;
@@ -22,7 +21,7 @@ public class Producto implements Parcelable {
     private List<Detalle> detalles;
     private int puntuacion;
 
-    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Calendar ultimaConsulta, int puntuacion, List<Detalle> detalles) {
+    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Long ultimaConsulta, int puntuacion, List<Detalle> detalles) {
         this.nombreProducto = nombreProducto;
         this.marcaProducto = marcaProducto;
         this.imagenProducto = imagenProducto;
@@ -32,7 +31,7 @@ public class Producto implements Parcelable {
         this.detalles = detalles;
     }
 
-    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Calendar ultimaConsulta, int puntuacion, List<Detalle> detalles, String designacionProducto, String supermercado) {
+    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Long ultimaConsulta, int puntuacion, List<Detalle> detalles, String designacionProducto, String supermercado) {
         this.nombreProducto = nombreProducto;
         this.marcaProducto = marcaProducto;
         this.imagenProducto = imagenProducto;
@@ -86,6 +85,14 @@ public class Producto implements Parcelable {
 
     public int getPuntuacion() {
         return puntuacion;
+    }
+
+    public void setUltimaConsulta(Long ultimaConsulta) {
+        this.ultimaConsulta = ultimaConsulta;
+    }
+
+    public Long getUltimaConsulta() {
+        return ultimaConsulta;
     }
 
     public static class Detalle {
@@ -157,7 +164,7 @@ public class Producto implements Parcelable {
                                      source.readString(),
                                      source.readInt(),
                                      (Calidad) source.readValue(null),
-                                     (Calendar) source.readValue(null),
+                                     (Long) source.readValue(null),
                                      source.readInt(),
                                      null,
                                      source.readString(),

@@ -1,18 +1,32 @@
 package chavales.los.practica1android;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.Button;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button camarabuttton;
     private RecyclerView lista;
+    private AdaptadorDeProductos adaptadorDeProductos;
+
+    /*pkg*/ static SqliteParaUltimasVisualizaciones sqlite;
+
+    public static final int REQ_CODE_CAMARA = 123;
+    public static final int REQ_CODE_INSPEC = 456;
 
     private static final Producto[] productos = {
             new Producto("Manzana con libros", "Apple", R.drawable.apple_256261_640, Calidad.BUENO, null, 73, Arrays.asList(new Producto.Detalle("Bajo en", Nutricion.FERTILIZANTE, 35.75f, Calidad.BUENO), new Producto.Detalle("Hasta arriba de", Nutricion.AZUCAR, 500, Calidad.MALO), new Producto.Detalle("Así asá de", Nutricion.PROTEINAS, 0.05f, Calidad.REGULAR), new Producto.Detalle("Un poquito de", Nutricion.TACOS, .5f, Calidad.BUENO), new Producto.Detalle("Bastantes ", Nutricion.NUECES, 30, Calidad.EXCELENTE))),
@@ -59,8 +73,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sqlite = new SqliteParaUltimasVisualizaciones(this, "bdvis", null, 4, productos.length);
+
+        try (SQLiteDatabase db = sqlite.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("select * from visualizacion where fecha is not null", null);
+            while (cursor.moveToNext()) {
+                productos[cursor.getInt(0)].setUltimaConsulta(cursor.getLong(1));
+            }
+        }
+
         lista = findViewById(R.id.recyclerView);
-        lista.setAdapter(new AdaptadorDeProductos(this, productos));
+        lista.setAdapter(adaptadorDeProductos = new AdaptadorDeProductos(this, productos));
         lista.setLayoutManager(new LinearLayoutManager(this));
+
+        camarabuttton = (Button)findViewById(R.id.buttonCamara);
+        camarabuttton.setOnClickListener(v -> {
+            Intent intentoCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intentoCamara, REQ_CODE_CAMARA );
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQ_CODE_CAMARA:
+                // nada
+                break;
+            case REQ_CODE_INSPEC:
+                if (data != null) {
+                    int i = data.getIntExtra("indice", -1);
+                    if (i > -1) {
+                        long justoAhora = Calendar.getInstance().getTimeInMillis();
+                        productos[i].setUltimaConsulta(justoAhora);
+                        sqlite.getWritableDatabase().execSQL("update visualizacion set fecha=? where indiceProducto=?", new Object[]{justoAhora, i});
+                        adaptadorDeProductos.notifyDataSetChanged();
+                    }
+                }
+                break;
+            default: break;
+        }
     }
 }

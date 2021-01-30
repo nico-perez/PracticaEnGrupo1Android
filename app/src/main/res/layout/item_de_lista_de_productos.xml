@@ -25,7 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Ultima consulta"
+        android:text="🕑 Ultima consulta"
         app:layout_constraintBottom_toBottomOf="@+id/imagenProducto"
         app:layout_constraintEnd_toEndOf="@+id/textoNombreProducto"
         app:layout_constraintStart_toStartOf="@+id/textoNombreProducto" />
@@ -44,7 +44,8 @@
         android:id="@+id/textoCalidadProducto"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Calidad del producto"
+        android:layout_marginBottom="4dp"
+        android:text="🟢 Calidad del producto"
         app:layout_constraintBottom_toTopOf="@+id/textoUltimaConsulta"
         app:layout_constraintEnd_toEndOf="@+id/textoNombreProducto"
         app:layout_constraintStart_toStartOf="@+id/textoNombreProducto" />
@@ -53,7 +54,7 @@
         android:id="@+id/textoNombreProducto"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="12dp"
         android:text="Nombre del producto"

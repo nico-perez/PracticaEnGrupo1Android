@@ -1,20 +1,16 @@
 package chavales.los.practica1android;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class InspeccionarProducto extends AppCompatActivity {
 
@@ -66,5 +62,7 @@ public class InspeccionarProducto extends AppCompatActivity {
                 return convertView;
             }
         });
+
+        setResult(RESULT_OK, new Intent(this, MainActivity.class).putExtra("indice", getIntent().getIntExtra("indice", -1)));
     }
 }

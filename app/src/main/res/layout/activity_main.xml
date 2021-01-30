@@ -24,19 +24,14 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+    <Button
+        android:id="@+id/buttonCamara"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:scaleX="1"
-        android:scaleY="1"
-        app:backgroundTint="@color/white"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
+        android:text="Button"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerView"
-        app:rippleColor="@color/black"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        app:layout_constraintEnd_toEndOf="@+id/recyclerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

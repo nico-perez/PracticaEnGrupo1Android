@@ -1,10 +1,8 @@
 package chavales.los.practica1android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Sacado, principalmente, de https://developer.android.com/guide/topics/ui/layout/recyclerview
  */
@@ -21,43 +22,48 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
 
     private Producto[] productos;
     private Context context;
+    private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 
     public AdaptadorDeProductos(Context context, Producto[] productos) {
         this.context = context;
         this.productos = productos;
     }
 
-    @NonNull
-    @Override
     /**
      * Infla la tarjeta (espacio para un item en la lista) y después devuelve
      * el resultado de llamar al constructor de ContenedorDeVistas.
      */
+    @NonNull
+    @Override
     public ContenedorDeVistas onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View vistaDeUnItem = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_de_lista_de_productos, viewGroup, false);
         return new ContenedorDeVistas(vistaDeUnItem);
     }
 
-    @Override
     /**
      * Este método recibe un contenedor de vistas y lo rellena con datos. Es este
      * método el que recicla los contenedores de vistas para mejorar el rendimiento
      * o lo que sea.
      */
+    @Override
     public void onBindViewHolder(@NonNull ContenedorDeVistas contenedor, int posicion) {
         final Producto producto = productos[posicion];
         contenedor.getImagenProducto().setImageResource(producto.getImagen());
         contenedor.getNombreProducto().setText(producto.getNombre());
         contenedor.getMarcaProducto().setText(producto.getMarca());
         contenedor.getCalidadProducto().setText(producto.getCalidad().getString());
-        contenedor.getUltimaConsulta().setText("esto todavia no jejeje");
+
+        Long ultimaConsulta = producto.getUltimaConsulta();
+        contenedor.getUltimaConsulta().setText("🕑 " + (ultimaConsulta == null ? "Nunca" : formatoFecha.format(new Date(ultimaConsulta))));
 
         contenedor.itemView.setOnClickListener(
             (v) -> {
                 Intent i = new Intent(context, InspeccionarProducto.class);
                 i.putExtra("producto", productos[posicion]);
-                context.startActivity(i);
+                i.putExtra("indice", posicion);
+
+                ((Activity) context).startActivityForResult(i, MainActivity.REQ_CODE_INSPEC);
             }
         );
     }
