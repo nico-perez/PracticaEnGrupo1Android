@@ -1,6 +1,8 @@
 package chavales.los.practica1android;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -9,17 +11,21 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Arrays;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button camarabuttton;
+    private FloatingActionButton camarabuttton;
     private RecyclerView lista;
     private AdaptadorDeProductos adaptadorDeProductos;
 
@@ -86,10 +92,14 @@ public class MainActivity extends AppCompatActivity {
         lista.setAdapter(adaptadorDeProductos = new AdaptadorDeProductos(this, productos));
         lista.setLayoutManager(new LinearLayoutManager(this));
 
-        camarabuttton = (Button)findViewById(R.id.buttonCamara);
+        camarabuttton = findViewById(R.id.buttonCamara);
         camarabuttton.setOnClickListener(v -> {
+            /*
             Intent intentoCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intentoCamara, REQ_CODE_CAMARA );
+             */
+            Intent actividadCamara = new Intent(this, Camara.class);
+            startActivity(actividadCamara);
         });
 
     }
