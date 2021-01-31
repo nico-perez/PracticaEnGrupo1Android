@@ -8,7 +8,7 @@ public enum Calidad {
     MEDIOCRE("🟠", "Mediocre"), // Emoji círculo naranja
     MALO("🔴", "Malo"); // Emoji círculo rojo
 
-    private final String emoji;
+    private final String emoji; // emoji
     private final String texto;
 
     Calidad(String emoji, String texto) {
