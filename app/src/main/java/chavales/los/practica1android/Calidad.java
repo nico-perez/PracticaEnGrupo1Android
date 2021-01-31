@@ -1,5 +1,6 @@
 package chavales.los.practica1android;
 
+/** Calidad */
 public enum Calidad {
     EXCELENTE("🔵", "Excelente"), // Emoji círculo azul
     BUENO("🟢", "Bueno"), // Emoji círculo verde

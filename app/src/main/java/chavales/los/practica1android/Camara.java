@@ -20,9 +20,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-// https://codelabs.developers.google.com/codelabs/camerax-getting-started#0
+/**
+ * tutorial cortesía de megacorporación gogle:
+ * https://codelabs.developers.google.com/codelabs/camerax-getting-started#0
+ */
 public class Camara extends AppCompatActivity {
 
+    // El camExecutor es el hilo que maneja los fotogramas de la cámara y los pasa
+    // al PreviewView
     private ExecutorService camExecutor;
     private PreviewView viewFinder;
 
@@ -35,6 +40,7 @@ public class Camara extends AppCompatActivity {
 
         viewFinder = findViewById(R.id.previewView);
 
+        // Si tenemos permiso, inicia la camara, si no, los pide
         if (allPermissionsGranted()) {
             startCamera();
         } else {
@@ -44,6 +50,10 @@ public class Camara extends AppCompatActivity {
         camExecutor = Executors.newSingleThreadExecutor();
     }
 
+    /**
+     * Aquí es donde se le indica al executor que tiene
+     * que pasarle los fotogramas al PreviewView
+     */
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> camProviderFuture = ProcessCameraProvider.getInstance(this);
         camProviderFuture.addListener(() -> {
@@ -78,13 +88,16 @@ public class Camara extends AppCompatActivity {
                 startCamera();
             } else {
                 Toast.makeText(this,
-                        "Permissions not granted by the user.",
+                        "Para usar la cámara necesitas proporcionar permiso",
                         Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
     }
 
+    /**
+     * Comprueba permisos de cámara
+     */
     private boolean allPermissionsGranted() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }

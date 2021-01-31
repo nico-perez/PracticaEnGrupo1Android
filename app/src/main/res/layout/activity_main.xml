@@ -27,13 +27,13 @@
         android:id="@+id/buttonCamara"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:src="@android:drawable/ic_menu_camera"
+        android:src="@drawable/ic_barcode"
         android:tint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="@+id/recyclerView"
-        app:maxImageSize="32dp" />
+        app:maxImageSize="38dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

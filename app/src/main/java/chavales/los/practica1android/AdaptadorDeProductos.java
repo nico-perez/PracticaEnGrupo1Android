@@ -21,7 +21,7 @@ import java.util.Date;
 public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProductos.ContenedorDeVistas>  {
 
     private Producto[] productos;
-    private Context context;
+    private Context context; // El contexto lo necesitamos para llamar a la actividad de inspeccionar producto
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 
     public AdaptadorDeProductos(Context context, Producto[] productos) {
@@ -30,8 +30,7 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
     }
 
     /**
-     * Infla la tarjeta (espacio para un item en la lista) y después devuelve
-     * el resultado de llamar al constructor de ContenedorDeVistas.
+     * Devuelve un contenedor de vistas sin datos
      */
     @NonNull
     @Override
@@ -62,7 +61,9 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
                 Intent i = new Intent(context, InspeccionarProducto.class);
                 i.putExtra("producto", productos[posicion]);
                 i.putExtra("indice", posicion);
-
+                // En el intent hemos puesto el producto, para rellenar la actividad de inspección con
+                // todos sus datos, y el indice, para después, al finalizar la actividad, saber de cuál de
+                // los productos es la fecha de última visita que hay que actualizar
                 ((Activity) context).startActivityForResult(i, MainActivity.REQ_CODE_INSPEC);
             }
         );
@@ -87,7 +88,6 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
 
         public ContenedorDeVistas(View vista) {
             super(vista);
-            // Define click listener for the ViewHolder's View
             imagenProducto = vista.findViewById(R.id.imagenProducto);
             nombreProducto = vista.findViewById(R.id.textoNombreProducto);
             marcaProducto = vista.findViewById(R.id.textoMarcaProducto);

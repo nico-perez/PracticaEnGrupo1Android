@@ -14,7 +14,7 @@ public class Producto implements Parcelable {
     private Calidad calidadProducto;
     private Long ultimaConsulta;
 
-    // esto no se sinceramente
+    // esto
     private String designacionProducto;
     private String supermercado;
 
@@ -95,12 +95,15 @@ public class Producto implements Parcelable {
         return ultimaConsulta;
     }
 
+    /**
+     * Clase para representar los detalles de los productos.
+     */
     public static class Detalle {
 
-        private final String bajoAltoEn;
-        private final Nutricion ingrediente;
-        private final float cantidad; // p.ej. «5,3 g», «80 ml», etc.
-        private final Calidad calidad;
+        private final String bajoAltoEn; // p.ej. «Alto en», «Con un poco de»
+        private final Nutricion ingrediente; // el ingrediente que describe este detalle
+        private final float cantidad; // p.ej. «5,3 g, «80 ml», etc.
+        private final Calidad calidad; // cómo de buena o mala es la cantidad descrita por este detalle
 
         public Detalle(String bajoAltoEn, Nutricion ingrediente, float cantidad, Calidad calidad) {
             this.bajoAltoEn = bajoAltoEn;
@@ -120,6 +123,7 @@ public class Producto implements Parcelable {
         public String getBajoAltoEn() {
             return bajoAltoEn;
         }
+
         public Calidad getCalidad() {
             return calidad;
         }
@@ -130,6 +134,10 @@ public class Producto implements Parcelable {
         return 0;
     }
 
+    /**
+     * Hay que implementar parcelable para añadir una instancia
+     * de Producto a un intent, así que aquí estamos
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombreProducto);

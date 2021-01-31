@@ -19,6 +19,7 @@ public class SqliteParaUltimasVisualizaciones extends SQLiteOpenHelper {
         db.execSQL("create table visualizacion(indiceProducto integer primary key, fecha integer)");
         db.beginTransaction();
         try {
+            // al crear la tabla, la llena de nulls para hacernos más fácil la vida
             for (int i = 0; i < capacidad; ++i) {
                 db.execSQL("insert into visualizacion values (?, null)", new Object[]{i});
             }

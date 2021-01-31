@@ -21,8 +21,10 @@ public class InspeccionarProducto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspeccionar_producto);
 
+        // El botón este solo finaliza la actividad
         ((ImageButton) findViewById(R.id.botonAtras)).setOnClickListener(v -> finish());
 
+        // Rellena las vistas con la info del parcelable
         final Producto producto = getIntent().getParcelableExtra("producto");
         ((ImageView) findViewById(R.id.imagenProductoInspeccion)).setImageResource(producto.getImagen());
         ((TextView) findViewById(R.id.textoNombreProductoInsp)).setText(producto.getNombre());
@@ -30,6 +32,7 @@ public class InspeccionarProducto extends AppCompatActivity {
         ((TextView) findViewById(R.id.textoCalidadInsp)).setText(producto.getCalidad().getString());
         ((TextView) findViewById(R.id.textoRatingProductoInsp)).setText(producto.getPuntuacion() + "/100");
 
+        // Son listas cortas así que hemos hecho ListView en vez de RecyclerView
         lista = findViewById(R.id.listaValoresNutricionales);
         lista.setAdapter(new BaseAdapter() {
             @Override
@@ -63,6 +66,7 @@ public class InspeccionarProducto extends AppCompatActivity {
             }
         });
 
+        // Y esto es para comunicar el indice del producto para cuando termine la actividad
         setResult(RESULT_OK, new Intent(this, MainActivity.class).putExtra("indice", getIntent().getIntExtra("indice", -1)));
     }
 }
