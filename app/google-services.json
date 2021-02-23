@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "678354612008",
+    "project_id": "practicaengrupoandroid",
+    "storage_bucket": "practicaengrupoandroid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678354612008:android:d967742a6cba0d7e56aa1d",
+        "android_client_info": {
+          "package_name": "chavales.los.practica1android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678354612008-hc02tldppiomin5b7daoeq3jeh7h73c5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS0x6Yxgcs-5-6Xx3vNxiPQtLmK-4Weso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678354612008-hc02tldppiomin5b7daoeq3jeh7h73c5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

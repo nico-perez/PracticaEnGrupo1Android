@@ -1,5 +1,6 @@
 package chavales.los.practica1android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
      * método el que recicla los contenedores de vistas para mejorar el rendimiento
      * o lo que sea.
      */
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ContenedorDeVistas contenedor, int posicion) {
         final Producto producto = productos[posicion];
@@ -54,7 +56,9 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
         contenedor.getCalidadProducto().setText(producto.getCalidad().getString());
 
         Long ultimaConsulta = producto.getUltimaConsulta();
-        contenedor.getUltimaConsulta().setText("🕑 " + (ultimaConsulta == null ? "Nunca" : formatoFecha.format(new Date(ultimaConsulta))));
+        contenedor.getUltimaConsulta().setText("🕑 " + (ultimaConsulta == null
+                                                        ? "Nunca"
+                                                        : formatoFecha.format(new Date(ultimaConsulta))));
 
         contenedor.itemView.setOnClickListener(
             (v) -> {

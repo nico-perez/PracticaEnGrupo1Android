@@ -461,7 +461,9 @@ public class MainActivity extends AppCompatActivity {
                     if (i > -1) {
                         long justoAhora = Calendar.getInstance().getTimeInMillis();
                         productos[i].setUltimaConsulta(justoAhora);
-                        sqlite.getWritableDatabase().execSQL("update visualizacion set fecha=? where indiceProducto=?", new Object[]{justoAhora, i});
+                        sqlite.getWritableDatabase()
+                                .execSQL("update visualizacion set fecha=? where indiceProducto=?",
+                                        new Object[]{justoAhora, i});
                         adaptadorDeProductos.notifyDataSetChanged();
                     }
                 }
