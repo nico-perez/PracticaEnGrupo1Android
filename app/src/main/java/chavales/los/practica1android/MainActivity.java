@@ -1,33 +1,26 @@
 package chavales.los.practica1android;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FloatingActionButton camarabuttton;
     private RecyclerView lista;
     private AdaptadorDeProductos adaptadorDeProductos;
+    private FirebaseDatabase db;
 
     /*pkg*/ static SqliteParaUltimasVisualizaciones sqlite;
 
@@ -426,6 +419,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        boolean primeroRuneo = db == null;
+        db = FirebaseDatabase.getInstance();
+        if (primeroRuneo) db.setPersistenceEnabled(true);
+
         // abrir o crear la base de datos
         sqlite = new SqliteParaUltimasVisualizaciones(this, "bdvis", null, 4, productos.length);
 
@@ -440,10 +437,14 @@ public class MainActivity extends AppCompatActivity {
         lista.setAdapter(adaptadorDeProductos = new AdaptadorDeProductos(this, productos));
         lista.setLayoutManager(new LinearLayoutManager(this));
 
-        camarabuttton = findViewById(R.id.buttonCamara);
-        camarabuttton.setOnClickListener(v -> {
+        findViewById(R.id.fabAbrirCamara).setOnClickListener(v -> {
             Intent actividadCamara = new Intent(this, Camara.class);
             startActivity(actividadCamara);
+        });
+
+        findViewById(R.id.fabAniadirProducto).setOnClickListener(v -> {
+            Intent actividadAniadir = new Intent(this, CrearProducto.class);
+            startActivity(actividadAniadir);
         });
     }
 

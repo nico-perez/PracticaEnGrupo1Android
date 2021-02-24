@@ -21,6 +21,9 @@ import java.util.Date;
  */
 public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProductos.ContenedorDeVistas>  {
 
+    private static final int LAYOUT_NORMAL = 0,
+                             LAYOUT_INVERTIDO = 1;
+
     private Producto[] productos;
     private Context context; // El contexto lo necesitamos para llamar a la actividad de inspeccionar producto
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
@@ -36,8 +39,18 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
     @NonNull
     @Override
     public ContenedorDeVistas onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View vistaDeUnItem = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_de_lista_de_productos, viewGroup, false);
+        View vistaDeUnItem;
+
+        switch (viewType) {
+            default: case LAYOUT_NORMAL:
+                vistaDeUnItem = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.item_de_lista_de_productos, viewGroup, false);
+                break;
+            case LAYOUT_INVERTIDO:
+                vistaDeUnItem = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.item_de_lista_de_productos_r, viewGroup, false);
+        }
+
         return new ContenedorDeVistas(vistaDeUnItem);
     }
 
@@ -49,6 +62,7 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ContenedorDeVistas contenedor, int posicion) {
+
         final Producto producto = productos[posicion];
         contenedor.getImagenProducto().setImageResource(producto.getImagen());
         contenedor.getNombreProducto().setText(producto.getNombre());
@@ -76,6 +90,14 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
     @Override
     public int getItemCount() {
         return productos.length;
+    }
+
+    /**
+     * Override para elegir entre un layout y otro según la posición
+     */
+    @Override
+    public int getItemViewType(int position) {
+        return position % 2 == 0 ? LAYOUT_NORMAL : LAYOUT_INVERTIDO;
     }
 
     /**

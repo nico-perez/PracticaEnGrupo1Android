@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PracticaEnGrupo1Android</string>
+    <string name="firebase_database_url">https://practicaengrupoandroid-default-rtdb.europe-west1.firebasedatabase.app</string>
 </resources>
