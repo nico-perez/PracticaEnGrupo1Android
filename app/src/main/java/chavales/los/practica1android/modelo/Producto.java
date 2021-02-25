@@ -1,4 +1,4 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.modelo;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.actividad;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,11 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 import java.util.Calendar;
+
+import chavales.los.practica1android.R;
+import chavales.los.practica1android.modelo.Calidad;
+import chavales.los.practica1android.modelo.Nutricion;
+import chavales.los.practica1android.modelo.Producto;
+import chavales.los.practica1android.util.AdaptadorDeProductos;
+import chavales.los.practica1android.util.SqliteParaUltimasVisualizaciones;
 
 public class MainActivity extends AppCompatActivity {
 

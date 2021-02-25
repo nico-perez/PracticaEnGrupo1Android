@@ -1,4 +1,4 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.util;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

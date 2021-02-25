@@ -1,4 +1,4 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.modelo;
 
 /** Calidad */
 public enum Calidad {

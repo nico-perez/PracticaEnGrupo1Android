@@ -1,4 +1,6 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.modelo;
+
+import chavales.los.practica1android.R;
 
 /**
  * Un enum que guarda los detalles de los productos: sus imagenes, nombres, etc

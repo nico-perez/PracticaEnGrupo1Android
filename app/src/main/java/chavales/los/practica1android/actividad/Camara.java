@@ -1,4 +1,4 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.actividad;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import chavales.los.practica1android.R;
 
 /**
  * tutorial cortesía de megacorporación gogle:

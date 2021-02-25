@@ -1,4 +1,4 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import chavales.los.practica1android.actividad.InspeccionarProducto;
+import chavales.los.practica1android.actividad.MainActivity;
+import chavales.los.practica1android.modelo.Producto;
+import chavales.los.practica1android.R;
 
 /**
  * Sacado, principalmente, de https://developer.android.com/guide/topics/ui/layout/recyclerview

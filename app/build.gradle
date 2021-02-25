@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "chavales.los.practica1android"
-        minSdkVersion 21
+        minSdkVersion 27
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,9 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
 
     // esto lo he sacao de https://codelabs.developers.google.com/codelabs/camerax-getting-started#0
     def camerax_version = "1.0.0-beta07"

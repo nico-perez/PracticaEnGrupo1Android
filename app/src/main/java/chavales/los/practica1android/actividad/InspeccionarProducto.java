@@ -1,4 +1,4 @@
-package chavales.los.practica1android;
+package chavales.los.practica1android.actividad;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import chavales.los.practica1android.R;
+import chavales.los.practica1android.modelo.Producto;
 
 public class InspeccionarProducto extends AppCompatActivity {
 
