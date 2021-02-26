@@ -138,9 +138,8 @@
                 app:layout_constraintStart_toStartOf="@+id/tvDetallesProducto"
                 app:layout_constraintTop_toBottomOf="@+id/layoutDetalles" />
 
-            <fragment
+            <com.google.android.gms.maps.MapView
                 android:id="@+id/googleMapa"
-                class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"

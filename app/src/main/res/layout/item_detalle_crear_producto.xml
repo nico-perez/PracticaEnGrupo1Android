@@ -6,86 +6,87 @@
     android:layout_height="wrap_content">
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
-        android:layout_width="145dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="32dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Contiene un par de"
-        android:textAlignment="textEnd"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:text="calorías"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName2"
-        app:layout_constraintStart_toEndOf="@+id/editTextTextPersonName2"
-        app:layout_constraintTop_toTopOf="@+id/editTextTextPersonName2" />
-
-    <EditText
-        android:id="@+id/editTextNumberDecimal"
+        android:id="@+id/edContiene"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:ems="10"
-        android:inputType="numberDecimal"
-        android:text="300"
+        android:inputType="textPersonName"
         android:textAlignment="textEnd"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName2"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+        app:layout_constraintEnd_toStartOf="@+id/tvNombreDetalle"
+        app:layout_constraintStart_toEndOf="@+id/desplegableDetalles"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvNombreDetalle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:maxWidth="68dp"
+        android:text="azucares añadidos"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/edContiene"
+        app:layout_constraintEnd_toStartOf="@+id/botonEliminarDetalle"
+        app:layout_constraintTop_toTopOf="@+id/edContiene" />
+
+    <EditText
+        android:id="@+id/edNumero"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:textAlignment="textEnd"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvUnidadDetalle"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/edContiene"
+        app:layout_constraintTop_toBottomOf="@+id/edContiene" />
+
+    <TextView
+        android:id="@+id/tvUnidadDetalle"
+        android:layout_width="22dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:text="kcal"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextNumberDecimal"
-        app:layout_constraintStart_toEndOf="@+id/editTextNumberDecimal"
-        app:layout_constraintTop_toTopOf="@+id/editTextNumberDecimal" />
+        app:layout_constraintBottom_toBottomOf="@+id/edNumero"
+        app:layout_constraintEnd_toStartOf="@+id/botonEliminarDetalle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/edContiene"
+        app:layout_constraintTop_toTopOf="@+id/edNumero" />
 
     <Spinner
-        android:id="@+id/imageView"
-        android:layout_width="60dp"
+        android:id="@+id/desplegableDetalles"
+        android:layout_width="96dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.029"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.013" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/desplegableCalidad"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/editTextNumberDecimal"
-        app:layout_constraintStart_toStartOf="@+id/editTextNumberDecimal"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNumberDecimal" />
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="4dp"
+        android:textAlignment="viewEnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textView8"
+        app:layout_constraintStart_toStartOf="@+id/edNumero"
+        app:layout_constraintTop_toBottomOf="@+id/edNumero" />
 
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="56dp"
+        android:id="@+id/botonEliminarDetalle"
+        android:layout_width="36dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,10 +97,15 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
         android:text="calidad"
+        android:textAlignment="gravity"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/spinner2"
-        app:layout_constraintStart_toEndOf="@+id/spinner2"
-        app:layout_constraintTop_toTopOf="@+id/spinner2" />
+        app:layout_constraintBottom_toBottomOf="@+id/desplegableCalidad"
+        app:layout_constraintEnd_toStartOf="@+id/botonEliminarDetalle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvUnidadDetalle"
+        app:layout_constraintTop_toTopOf="@+id/desplegableCalidad"
+        app:layout_constraintVertical_bias="0.51" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
