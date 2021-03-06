@@ -1,27 +1,46 @@
 package chavales.los.practica1android.actividad;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import chavales.los.practica1android.R;
 import chavales.los.practica1android.modelo.Calidad;
@@ -29,20 +48,33 @@ import chavales.los.practica1android.modelo.Nutricion;
 
 public class CrearProducto extends AppCompatActivity {
 
+    private static final int REQ_IMAGEN = 285;
+
     private FirebaseDatabase db;
+    FirebaseStorage storage;
 
     private EditText nombre, marca;
     private TextView notaNum;
     private SeekBar nota;
+    private ImageButton botonAniadirDetalle;
+
+    private Button botonBuscarImagen;
+    private Uri imagen;
+
+    private Button botonConfirmar;
 
     private static final List<Calidad> CALIDADES = Collections.unmodifiableList(Arrays.asList(Calidad.values()));
 
-    // TODO usar Set en vez de List
-    private final List<Nutricion> detalles_disponibles = new ArrayList<Nutricion>(Arrays.asList(Nutricion.values()));
-    private final List<Nutricion> detalles_aniadidos = new ArrayList<>();
+    // Los detalles que aun no se han añadido
+    private final List<Nutricion> detalles_disponibles = new ArrayList<>(Arrays.asList(Nutricion.values()));
+    // Los detalles que sí se han añadido, con el ID de la vista como clave
+    private final SortedMap<Integer, Nutricion> detalles_aniadidos = new TreeMap<>();
 
     private GoogleMap mapa;
     private MapView mapView;
+    private Marker markerSelec = null;
+    private EditText markerNombre;
+    private FloatingActionButton fabEliminarMarker;
 
     private ScrollView sv;
     private LinearLayout layoutDetalles;
@@ -53,17 +85,73 @@ public class CrearProducto extends AppCompatActivity {
         setContentView(R.layout.activity_crear_producto);
 
         db = FirebaseDatabase.getInstance();
+        storage = FirebaseStorage.getInstance();
 
         mapView = findViewById(R.id.googleMapa);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this::onMapReady);
+        markerNombre = findViewById(R.id.etNombreMarker);
+        fabEliminarMarker = findViewById(R.id.fabEliminarMarker);
+        fabEliminarMarker.setOnClickListener(v -> {
+            if (markerSelec != null && mapa != null) {
+                markerSelec.remove();
+                markerNombre.setText("");
+            }
+        });
+
+        botonBuscarImagen = findViewById(R.id.botonBuscarImagen);
+        botonBuscarImagen.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Imagen para el producto"), REQ_IMAGEN);
+        });
+
+        botonConfirmar = findViewById(R.id.botonConfirmar);
+        botonConfirmar.setOnClickListener(v -> {
+            if (imagen != null) {
+                StorageReference storageRef = storage.getReference();
+
+                StorageReference imgs = storageRef.child("prods/" + imagen.hashCode() + Calendar.getInstance().getTimeInMillis());
+                imgs.putFile(imagen);
+
+                Toast.makeText(this, "subiendo imagen", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        notaNum = findViewById(R.id.tvNotaEnNumero);
+        nota = findViewById(R.id.sbNotaProducto);
+        nota.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String texto = Integer.toString(progress);
+                if (progress <= 20) texto += " 🤢";
+                else if (progress <= 40) texto += " 😰";
+                else if (progress <= 60) texto += " 😐";
+                else if (progress <= 80) texto += " 😊";
+                else texto += " 😄";
+
+                notaNum.setText(texto);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         layoutDetalles = findViewById(R.id.layoutDetalles);
-        findViewById(R.id.botonAnadirDetalle).setOnClickListener(
+        botonAniadirDetalle = findViewById(R.id.botonAnadirDetalle);
+        botonAniadirDetalle.setOnClickListener(
                 new View.OnClickListener() {
 
-                    // TODO esto esta mal
-                    private Nutricion seleccionado;
+                    private int numVistasAniadidas = 0;
 
                     private Spinner desplegableDetalles;
                     private Spinner desplegableCalidad;
@@ -72,15 +160,26 @@ public class CrearProducto extends AppCompatActivity {
                     private TextView nombreDetalle;
                     private TextView unidadDetalle;
 
-                    private void setearCampos() {
-                        desplegableDetalles.setBackgroundResource(seleccionado.getImg());
-                        nombreDetalle.setText(seleccionado.getNombreUd());
-                        unidadDetalle.setText(seleccionado.getUdMedicion());
+                    private void setearCampos(int id) {
+                        Nutricion seleccionado = detalles_aniadidos.get(id);
+                        findViewById(id).findViewById(R.id.desplegableDetalles).setBackgroundResource(seleccionado.getImg());
+                        ((TextView) findViewById(id).findViewById(R.id.tvNombreDetalle)).setText(seleccionado.getNombreUd());
+                        ((TextView) findViewById(id).findViewById(R.id.tvUnidadDetalle)).setText(seleccionado.getUdMedicion());
+
+                        //desplegableDetalles.setBackgroundResource(seleccionado.getImg());
+                        //nombreDetalle.setText(seleccionado.getNombreUd());
+                        //unidadDetalle.setText(seleccionado.getUdMedicion());
                     }
 
                     @Override
                     public void onClick(View v) {
+
+                        if (detalles_disponibles.size() == 1) {
+                            botonAniadirDetalle.setVisibility(View.GONE);
+                        }
+
                         View item = getLayoutInflater().inflate(R.layout.item_detalle_crear_producto, null);
+                        item.setId(++numVistasAniadidas);
 
                         desplegableDetalles = item.findViewById(R.id.desplegableDetalles);
                         desplegableCalidad = item.findViewById(R.id.desplegableCalidad);
@@ -89,39 +188,35 @@ public class CrearProducto extends AppCompatActivity {
                         nombreDetalle = item.findViewById(R.id.tvNombreDetalle);
                         unidadDetalle = item.findViewById(R.id.tvUnidadDetalle);
 
-                        /*
-                        seleccionado = (Nutricion) desplegableDetalles.getSelectedItem();
-                        detalles_disponibles.remove(seleccionado);
-                        detalles_aniadidos.add(seleccionado);
-                        setearCampos();
-                         */
-
                         item.findViewById(R.id.botonEliminarDetalle).setOnClickListener(w -> {
                             layoutDetalles.removeView(item);
-                            detalles_disponibles.add(seleccionado);
-                            detalles_aniadidos.remove(seleccionado);
+                            detalles_disponibles.add(detalles_aniadidos.remove(item.getId()));
+                            --numVistasAniadidas;
+                            botonAniadirDetalle.setVisibility(View.VISIBLE);
                         });
+
 
                         desplegableDetalles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-                                Nutricion temp =  detalles_disponibles.remove(pos);
+                                View vistaDetalle = (View) view.getParent().getParent();
 
-                                if (seleccionado != null) {
-                                    detalles_disponibles.add(seleccionado);
-                                    detalles_aniadidos.remove(seleccionado);
+                                int idVistaDetalle = vistaDetalle.getId();
+
+                                Nutricion temp = detalles_disponibles.remove(pos);
+
+                                Nutricion anterior = detalles_aniadidos.put(idVistaDetalle, temp);
+                                if (anterior != null) {
+                                    detalles_disponibles.add(anterior);
                                 }
 
-                                seleccionado = temp;
-                                detalles_aniadidos.add(seleccionado);
-
-                                setearCampos();
+                                setearCampos(idVistaDetalle);
                             }
 
                             @Override
                             public void onNothingSelected(AdapterView<?> parent) {
-
+                                int count = parent.getCount();
                             }
                         });
 
@@ -141,12 +236,36 @@ public class CrearProducto extends AppCompatActivity {
                 });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_IMAGEN && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(this, "No se ha podido abrir la imagen", Toast.LENGTH_SHORT).show();
+            } else {
+                imagen = data.getData();
+
+                Cursor returnCursor = getContentResolver().query(imagen, null, null, null, null);
+                int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                returnCursor.moveToFirst();
+                String name = returnCursor.getString(nameIndex);
+                returnCursor.close();
+
+                if (name.length() > 20) {
+                    name = name.substring(name.length() - 20);
+                }
+
+                botonBuscarImagen.setText(" ... " + name);
+            }
+        }
+    }
+
     private void onMapReady(GoogleMap googleMap) {
         mapa = googleMap;
         mapa.getUiSettings().setZoomControlsEnabled(true);
 
-        // TODO aaaaaa
-        // mapa.setOnMapLongClickListener(this::onMapLongClick);
+        mapa.setOnMapLongClickListener(this::onMapLongClick);
+        mapa.setOnMarkerClickListener(this::onMarkerClick);
 
         mapa.setOnCameraMoveStartedListener(
             i -> mapView.getParent().requestDisallowInterceptTouchEvent(true)
@@ -155,6 +274,33 @@ public class CrearProducto extends AppCompatActivity {
         mapa.setOnCameraIdleListener(
             () -> mapView.getParent().requestDisallowInterceptTouchEvent(false)
         );
+    }
+
+    private void guardarMarkerActual() {
+        String texto = markerNombre.getText().toString();
+        if (markerSelec != null && texto != null && !texto.equals("")) {
+            markerSelec.setTitle(texto);
+        }
+    }
+
+    private boolean onMarkerClick(Marker markerNuevo) {
+        guardarMarkerActual();
+
+        markerSelec = markerNuevo;
+        String markerTitle = markerNuevo.getTitle();
+        if (markerTitle != null && !markerTitle.equals("")) {
+            markerNombre.clearFocus();
+        }
+        markerNombre.setText(markerTitle);
+        markerNuevo.showInfoWindow();
+        return true;
+    }
+
+    private void onMapLongClick(LatLng latLng) {
+        guardarMarkerActual();
+        markerSelec = mapa.addMarker(new MarkerOptions().position(latLng));
+        markerNombre.setText(markerSelec.getTitle());
+        markerNombre.requestFocus();
     }
 
     @Override

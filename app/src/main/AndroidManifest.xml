@@ -9,15 +9,16 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Práctica en Grupo: parte 2"
+        android:label="Práctica en grupo: 2ª entrega"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PracticaEnGrupo1Android">
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyChh88usZPLErdwPw1ntsrNVOaKa6PLgxY"/>
-        <activity android:name=".actividad.CrearProducto"></activity>
+        <activity android:name=".actividad.CrearProducto"
+                  android:label="Creación de un producto"></activity>
         <activity
             android:name=".actividad.LoginActivity"
-            android:label="Inicio de sesión"
+            android:label="Práctica en grupo"
             android:theme="@style/Theme.AppCompat.DayNight">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
