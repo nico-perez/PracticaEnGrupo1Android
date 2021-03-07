@@ -16,6 +16,14 @@ public enum Calidad {
         this.texto = texto;
     }
 
+    public static Calidad deNota(int not) {
+        if (not <= 20) return MALO;
+        else if (not <= 40) return MEDIOCRE;
+        else if (not <= 60) return REGULAR;
+        else if (not <= 80) return BUENO;
+        else return EXCELENTE;
+    }
+
     public String getEmoji() {
         return emoji;
     }

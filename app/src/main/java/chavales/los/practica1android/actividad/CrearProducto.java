@@ -3,7 +3,6 @@ package chavales.los.practica1android.actividad;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -32,7 +31,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,13 +43,14 @@ import java.util.TreeMap;
 import chavales.los.practica1android.R;
 import chavales.los.practica1android.modelo.Calidad;
 import chavales.los.practica1android.modelo.Nutricion;
+import chavales.los.practica1android.modelo.Producto;
 
 public class CrearProducto extends AppCompatActivity {
 
     private static final int REQ_IMAGEN = 285;
 
     private FirebaseDatabase db;
-    FirebaseStorage storage;
+    private FirebaseStorage stg;
 
     private EditText nombre, marca;
     private TextView notaNum;
@@ -72,6 +71,7 @@ public class CrearProducto extends AppCompatActivity {
 
     private GoogleMap mapa;
     private MapView mapView;
+    private List<Marker> todos = new ArrayList<>();
     private Marker markerSelec = null;
     private EditText markerNombre;
     private FloatingActionButton fabEliminarMarker;
@@ -85,7 +85,10 @@ public class CrearProducto extends AppCompatActivity {
         setContentView(R.layout.activity_crear_producto);
 
         db = FirebaseDatabase.getInstance();
-        storage = FirebaseStorage.getInstance();
+        stg = FirebaseStorage.getInstance();
+
+        nombre = findViewById(R.id.etNombreProducto);
+        marca = findViewById(R.id.etMarcaProducto);
 
         mapView = findViewById(R.id.googleMapa);
         mapView.onCreate(savedInstanceState);
@@ -108,17 +111,7 @@ public class CrearProducto extends AppCompatActivity {
         });
 
         botonConfirmar = findViewById(R.id.botonConfirmar);
-        botonConfirmar.setOnClickListener(v -> {
-            if (imagen != null) {
-                StorageReference storageRef = storage.getReference();
-
-                StorageReference imgs = storageRef.child("prods/" + imagen.hashCode() + Calendar.getInstance().getTimeInMillis());
-                imgs.putFile(imagen);
-
-                Toast.makeText(this, "subiendo imagen", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+        botonConfirmar.setOnClickListener(this::comprobarYCrear);
 
         notaNum = findViewById(R.id.tvNotaEnNumero);
         nota = findViewById(R.id.sbNotaProducto);
@@ -236,6 +229,78 @@ public class CrearProducto extends AppCompatActivity {
                 });
     }
 
+    private void comprobarYCrear(View view) {
+
+        String nom = nombre.getText().toString();
+        if (nom.equals("")) {
+            nombre.requestFocus();
+            nombre.setError("El nombre no puede estar vacío.");
+            return;
+        }
+
+        String img;
+        if (imagen != null) {
+            img = String.valueOf(Math.abs(imagen.hashCode())) + String.valueOf(Calendar.getInstance().getTimeInMillis());
+            //StorageReference imgs = storageRef.child("prods/" + imagen.hashCode() + Calendar.getInstance().getTimeInMillis());
+            //imgs.putFile(imagen);
+        } else {
+            botonBuscarImagen.requestFocus();
+            botonBuscarImagen.setError("Se necesita una imagen que subir.");
+            return;
+        }
+
+        String mrc = marca.getText().toString();
+        if (mrc.equals("")) {
+            marca.requestFocus();
+            marca.setError("La marca no puede estar vacía");
+            return;
+        }
+
+        int not = nota.getProgress();
+
+        List<Producto.Detalle> detalles = new ArrayList<>();
+        detalles_aniadidos.forEach((i, n) -> {
+            View item = findViewById(i);
+            EditText edContiene = item.findViewById(R.id.edContiene);
+            EditText edNumero = item.findViewById(R.id.edNumero);
+            Spinner calidad = item.findViewById(R.id.desplegableCalidad);
+
+            String bajoAltoEn = edContiene.getText().toString();
+            if (bajoAltoEn.equals("")) return;
+
+            float num = 0f;
+            try {
+                num = Float.parseFloat(edNumero.getText().toString());
+            } catch (NumberFormatException e) {
+                return;
+            }
+
+            Calidad cal = Calidad.valueOf(calidad.getSelectedItem().toString());
+
+            Producto.Detalle d = new Producto.Detalle(bajoAltoEn, n, num, cal);
+            detalles.add(d);
+        });
+
+        if (!markerNombre.getText().toString().equals("")) {
+            markerSelec.setTitle(markerNombre.getText().toString());
+        }
+        List<MarkerOptions> ubi = new ArrayList<>();
+        for(Marker m : todos) {
+            ubi.add(new MarkerOptions().position(m.getPosition()).title(m.getTitle()));
+        }
+
+        // en principio tooodo ok? subir movidas
+
+        Producto prod = new Producto(nom, mrc, img, Calidad.deNota(not), null, not, detalles, null, ubi);
+
+        stg.getReference("prods").child(img).putFile(imagen);
+
+        prod.subirAFirebase(this, db, stg);
+
+        Toast.makeText(this, "Subiendo producto al internet...", Toast.LENGTH_LONG).show();
+        finish();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -299,6 +364,7 @@ public class CrearProducto extends AppCompatActivity {
     private void onMapLongClick(LatLng latLng) {
         guardarMarkerActual();
         markerSelec = mapa.addMarker(new MarkerOptions().position(latLng));
+        todos.add(markerSelec);
         markerNombre.setText(markerSelec.getTitle());
         markerNombre.requestFocus();
     }

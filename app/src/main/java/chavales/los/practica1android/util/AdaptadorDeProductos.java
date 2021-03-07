@@ -2,8 +2,10 @@ package chavales.los.practica1android.util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.TaskInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import chavales.los.practica1android.actividad.InspeccionarProducto;
 import chavales.los.practica1android.actividad.MainActivity;
@@ -29,11 +37,11 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
     private static final int LAYOUT_NORMAL = 0,
                              LAYOUT_INVERTIDO = 1;
 
-    private Producto[] productos;
+    private List<Producto> productos;
     private Context context; // El contexto lo necesitamos para llamar a la actividad de inspeccionar producto
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 
-    public AdaptadorDeProductos(Context context, Producto[] productos) {
+    public AdaptadorDeProductos(Context context, List<Producto> productos) {
         this.context = context;
         this.productos = productos;
     }
@@ -68,8 +76,16 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
     @Override
     public void onBindViewHolder(@NonNull ContenedorDeVistas contenedor, int posicion) {
 
-        final Producto producto = productos[posicion];
-        contenedor.getImagenProducto().setImageResource(producto.getImagen());
+        final Producto producto = productos.get(posicion);
+
+        String urlImagen = "prods/" + producto.getImagen();
+        System.out.println(urlImagen);
+
+        FirebaseStorage.getInstance().getReference(urlImagen).getDownloadUrl().addOnSuccessListener(
+                r -> Glide.with(context).load(r).into(contenedor.getImagenProducto())
+        );
+
+        // contenedor.getImagenProducto().setImageResource(producto.getImagen());
         contenedor.getNombreProducto().setText(producto.getNombre());
         contenedor.getMarcaProducto().setText(producto.getMarca());
         contenedor.getCalidadProducto().setText(producto.getCalidad().getString());
@@ -82,7 +98,7 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
         contenedor.itemView.setOnClickListener(
             (v) -> {
                 Intent i = new Intent(context, InspeccionarProducto.class);
-                i.putExtra("producto", productos[posicion]);
+                i.putExtra("producto", productos.get(posicion));
                 i.putExtra("indice", posicion);
                 // En el intent hemos puesto el producto, para rellenar la actividad de inspección con
                 // todos sus datos, y el indice, para después, al finalizar la actividad, saber de cuál de
@@ -94,7 +110,7 @@ public class AdaptadorDeProductos extends RecyclerView.Adapter<AdaptadorDeProduc
 
     @Override
     public int getItemCount() {
-        return productos.length;
+        return productos.size();
     }
 
     /**

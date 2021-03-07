@@ -2,6 +2,7 @@ package chavales.los.practica1android.actividad;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +24,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.util.List;
 
 import chavales.los.practica1android.R;
 import chavales.los.practica1android.modelo.Producto;
@@ -32,7 +37,7 @@ public class InspeccionarProducto extends AppCompatActivity {
 
     private GoogleMap mapa;
     private MapView mapView;
-    private MarkerOptions[] ubicaciones;
+    private List<MarkerOptions> ubicaciones;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +53,13 @@ public class InspeccionarProducto extends AppCompatActivity {
 
         // Rellena las vistas con la info del parcelable
         final Producto producto = getIntent().getParcelableExtra("producto");
-        ((ImageView) findViewById(R.id.imagenProductoInspeccion)).setImageResource(producto.getImagen());
+
+        final String urlImagen = "prods/" + producto.getImagen();
+        FirebaseStorage.getInstance().getReference(urlImagen).getDownloadUrl().addOnSuccessListener(
+                r -> Glide.with(this).load(r).into((ImageView) findViewById(R.id.imagenProductoInspeccion))
+        );
+
+        //((ImageView) findViewById(R.id.imagenProductoInspeccion)).setImageResource(producto.getImagen());
         ((TextView) findViewById(R.id.textoNombreProductoInsp)).setText(producto.getNombre());
         ((TextView) findViewById(R.id.textoMarcaProductoInsp)).setText(producto.getMarca());
         ((TextView) findViewById(R.id.textoCalidadInsp)).setText(producto.getCalidad().getString());
@@ -87,14 +98,16 @@ public class InspeccionarProducto extends AppCompatActivity {
                 () -> mapView.getParent().requestDisallowInterceptTouchEvent(false)
         );
 
-        if (ubicaciones != null && ubicaciones.length > 0) {
+        if (ubicaciones != null && ubicaciones.size() > 0) {
             LatLngBounds.Builder llb = new LatLngBounds.Builder();
             for (MarkerOptions m : ubicaciones) {
                 mapa.addMarker(m);
                 llb.include(m.getPosition());
             }
 
-           // mapa.animateCamera(CameraUpdateFactory.newLatLngBounds(llb.build(), 25));
+            int trescientosDipEnPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
+            int sesentaycuatroDipEnPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, getResources().getDisplayMetrics());
+            mapa.animateCamera(CameraUpdateFactory.newLatLngBounds(llb.build(), trescientosDipEnPx, trescientosDipEnPx, sesentaycuatroDipEnPx));
         }
     }
 
