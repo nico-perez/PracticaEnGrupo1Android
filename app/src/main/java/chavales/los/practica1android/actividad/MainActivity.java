@@ -88,9 +88,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (!dataSnapshot.getKey().equals("num")) {
-                    Producto p = Producto.recuperarDeFirebase(dataSnapshot, stg);
-                    productos.add(p);
-                    if (adaptadorDeProductos != null) adaptadorDeProductos.notifyDataSetChanged();
+                    try {
+                        Producto p = Producto.recuperarDeFirebase(dataSnapshot, stg);
+                        productos.add(p);
+                        if (adaptadorDeProductos != null) adaptadorDeProductos.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
                 }
             }
 

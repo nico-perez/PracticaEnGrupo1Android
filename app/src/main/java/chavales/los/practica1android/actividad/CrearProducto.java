@@ -1,7 +1,9 @@
 package chavales.los.practica1android.actividad;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -47,7 +50,7 @@ import chavales.los.practica1android.modelo.Producto;
 
 public class CrearProducto extends AppCompatActivity {
 
-    private static final int REQ_IMAGEN = 285;
+    private static final int REQ_IMAGEN = 285, REQ_PERMS_IMG = 383;
 
     private FirebaseDatabase db;
     private FirebaseStorage stg;
@@ -104,10 +107,17 @@ public class CrearProducto extends AppCompatActivity {
 
         botonBuscarImagen = findViewById(R.id.botonBuscarImagen);
         botonBuscarImagen.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Imagen para el producto"), REQ_IMAGEN);
+
+            try {
+                if (ActivityCompat.checkSelfPermission(CrearProducto.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(CrearProducto.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_PERMS_IMG);
+                } else {
+                    intentGaleria();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         });
 
         botonConfirmar = findViewById(R.id.botonConfirmar);
@@ -229,6 +239,13 @@ public class CrearProducto extends AppCompatActivity {
                 });
     }
 
+    private void intentGaleria() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Imagen para el producto"), REQ_IMAGEN);
+    }
+
     private void comprobarYCrear(View view) {
 
         String nom = nombre.getText().toString();
@@ -322,6 +339,21 @@ public class CrearProducto extends AppCompatActivity {
 
                 botonBuscarImagen.setText(" ... " + name);
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQ_PERMS_IMG:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    intentGaleria();
+                } else {
+                    Toast.makeText(this, "Para añadir una imagen es necesario acceder a la galería", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            default: return;
         }
     }
 
