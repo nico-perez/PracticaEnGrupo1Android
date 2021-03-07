@@ -239,6 +239,7 @@ public class CrearProducto extends AppCompatActivity {
                 });
     }
 
+    /** para elegir una foto del producto */
     private void intentGaleria() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -246,6 +247,7 @@ public class CrearProducto extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Imagen para el producto"), REQ_IMAGEN);
     }
 
+    /** verifica que los campos están rellenados, y en caso de que si, sube el producto nuevo */
     private void comprobarYCrear(View view) {
 
         String nom = nombre.getText().toString();

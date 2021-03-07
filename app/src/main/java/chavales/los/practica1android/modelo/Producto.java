@@ -229,6 +229,7 @@ public class Producto implements Parcelable {
         dest.writeList(detalles);
     }
 
+    /** extrae del snapshot un producto */
     public static Producto recuperarDeFirebase(DataSnapshot data, FirebaseStorage bin) {
         String nombre = data.child("nombre").getValue(String.class);
         String marca = data.child("marca").getValue(String.class);
@@ -250,6 +251,7 @@ public class Producto implements Parcelable {
         return producto;
     }
 
+    /** sube los datos de este producto a firebase */
     public void subirAFirebase(Context context, FirebaseDatabase json, FirebaseStorage bin) {
         DatabaseReference dbrefProductos = json.getReference("productos");
         dbrefProductos.runTransaction(new Transaction.Handler() {
