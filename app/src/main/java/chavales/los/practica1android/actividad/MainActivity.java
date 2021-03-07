@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                     new Producto.Detalle("Contiene", Nutricion.SODIO, 67, Calidad.BUENO),
                     new Producto.Detalle("Alto en", Nutricion.POTASIO, 302, Calidad.BUENO),
                     new Producto.Detalle("Nada de", Nutricion.HIDRATOS, 0, Calidad.EXCELENTE),
-                    new Producto.Detalle("Contiene", Nutricion.PROTEINAS, 24, Calidad.BUENO))),
+                    new Producto.Detalle("Contiene", Nutricion.PROTEINAS, 24, Calidad.BUENO)), "hola", new MarkerOptions[] { new MarkerOptions().position(new LatLng(3.34, -3.23)).title("Marker ejemplo")}),
 
             new Producto("Frutas del bosque", "Mercadona", R.drawable.dark_mood_food_2986532_640, Calidad.BUENO, null, 64, Arrays.asList(
                     new Producto.Detalle("Contiene", Nutricion.AZUCAR, 12, Calidad.BUENO),

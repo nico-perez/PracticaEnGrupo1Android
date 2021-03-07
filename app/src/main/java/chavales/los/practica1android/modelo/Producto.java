@@ -3,6 +3,9 @@ package chavales.los.practica1android.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,7 @@ public class Producto implements Parcelable {
 
     // esto
     private String designacionProducto;
-    private String supermercado;
+    private MarkerOptions[] ubicaciones;
 
     private List<Detalle> detalles;
     private int puntuacion;
@@ -31,7 +34,7 @@ public class Producto implements Parcelable {
         this.detalles = detalles;
     }
 
-    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Long ultimaConsulta, int puntuacion, List<Detalle> detalles, String designacionProducto, String supermercado) {
+    public Producto(String nombreProducto, String marcaProducto, int imagenProducto, Calidad calidadProducto, Long ultimaConsulta, int puntuacion, List<Detalle> detalles, String designacionProducto, MarkerOptions[] ubicaciones) {
         this.nombreProducto = nombreProducto;
         this.marcaProducto = marcaProducto;
         this.imagenProducto = imagenProducto;
@@ -40,7 +43,7 @@ public class Producto implements Parcelable {
         this.puntuacion = puntuacion;
         this.detalles = detalles;
         this.designacionProducto = designacionProducto;
-        this.supermercado = supermercado;
+        this.ubicaciones = ubicaciones;
     }
 
     public String getNombre() {
@@ -95,6 +98,14 @@ public class Producto implements Parcelable {
         return ultimaConsulta;
     }
 
+    public void setUbicaciones(MarkerOptions[] ubicaciones) {
+        this.ubicaciones = ubicaciones;
+    }
+
+    public MarkerOptions[] getUbicaciones() {
+        return ubicaciones;
+    }
+
     /**
      * Clase para representar los detalles de los productos.
      */
@@ -147,7 +158,8 @@ public class Producto implements Parcelable {
         dest.writeValue(ultimaConsulta);
         dest.writeInt(puntuacion);
         dest.writeString(designacionProducto);
-        dest.writeString(supermercado);
+
+        dest.writeTypedArray(ubicaciones, 0);
 
         if (detalles != null) {
             // Número de elementos en la lista de detalles
@@ -176,7 +188,17 @@ public class Producto implements Parcelable {
                                      source.readInt(),
                                      null,
                                      source.readString(),
-                                     source.readString());
+                                     null);
+
+            MarkerOptions[] ubicaciones = null;
+            int numUbic = source.readInt();
+            if (numUbic != -1) {
+                ubicaciones = new MarkerOptions[numUbic];
+                for (int i = 0; i < numUbic; ++i) {
+                    ubicaciones[i] = source.readTypedObject(MarkerOptions.CREATOR);
+                }
+            }
+            aDevolver.setUbicaciones(ubicaciones);
 
             final int numDetalles;
             List<Detalle> detalles = new ArrayList<>(numDetalles = source.readInt());
